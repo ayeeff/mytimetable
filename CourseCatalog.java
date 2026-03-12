@@ -18,7 +18,7 @@ public class CourseCatalog {
      * Constructor initializes the course catalog and loads from CSV
      */
     public CourseCatalog() {
-        this.courses = new ArrayList<>();
+        this.courses = new ArrayList<Course>();
         loadCoursesFromCSV();
     }
 
@@ -75,7 +75,7 @@ public class CourseCatalog {
      * @return List of matching courses
      */
     public List<Course> searchByKeyword(String keyword) {
-        List<Course> matchingCourses = new ArrayList<>();
+        List<Course> matchingCourses = new ArrayList<Course>();
         for (Course course : courses) {
             if (course.matchesKeyword(keyword)) {
                 matchingCourses.add(course);
@@ -89,7 +89,7 @@ public class CourseCatalog {
      * @return List of all courses
      */
     public List<Course> getAllCourses() {
-        return new ArrayList<>(courses);
+        return new ArrayList<Course>(courses);
     }
 
     /**

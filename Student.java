@@ -20,7 +20,7 @@ public class Student {
     public Student(String studentId, String name) {
         this.studentId = studentId;
         this.name = name;
-        this.enrolledCourses = new ArrayList<>();
+        this.enrolledCourses = new ArrayList<Course>();
     }
 
     // Getter methods
@@ -37,7 +37,7 @@ public class Student {
      * @return List of courses student is enrolled in
      */
     public List<Course> getEnrolledCourses() {
-        return new ArrayList<>(enrolledCourses);
+        return new ArrayList<Course>(enrolledCourses);
     }
 
     /**

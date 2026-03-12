@@ -70,8 +70,7 @@ public class MyTimetable {
      * Display main menu options
      */
     private void displayMainMenu() {
-        System.out.println("
->Select from main menu");
+        System.out.println("\n>Select from main menu");
         System.out.println("1) Search by keyword to enroll");
         System.out.println("2) Show my enrolled courses");
         System.out.println("3) Withdraw from a course");
@@ -150,9 +149,7 @@ public class MyTimetable {
             return;
         }
 
-        System.out.println("
-You have enrolled into the following course(s):
-");
+        System.out.println("\nYou have enrolled into the following course(s):\n");
         List<Course> courses = currentStudent.getEnrolledCourses();
         for (Course course : courses) {
             System.out.println(course.toString());
@@ -168,8 +165,7 @@ You have enrolled into the following course(s):
             return;
         }
 
-        System.out.println("
-Please choose a course to withdraw:");
+        System.out.println("\nPlease choose a course to withdraw:");
         List<Course> courses = currentStudent.getEnrolledCourses();
 
         for (int i = 0; i < courses.size(); i++) {
