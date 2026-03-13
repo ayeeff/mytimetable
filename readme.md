@@ -12,13 +12,11 @@ Date: April 2026
 TABLE OF CONTENTS
 
 1. Class Overview and Hierarchy
-2. UML Class Diagram
-3. Sequence Diagram
-4. Object-Oriented Principles Demonstrated
-5. Java Collections Framework Usage
-6. Class Details
-7. Compilation and Execution Instructions
-8. File Structure
+2. Object-Oriented Principles Demonstrated
+3. Java Collections Framework Usage
+4. Class Details
+5. Compilation and Execution Instructions
+6. File Structure
 
 ---
 
@@ -41,119 +39,7 @@ MyTimetable – main application controller
 
 ---
 
-2. UML CLASS DIAGRAM
-
-+------------------------------------------------+
-|                   Course (abstract)             |
-+------------------------------------------------+
-| - courseName : String                           |
-| - year : String                                 |
-| - dayOfLecture : String                         |
-| - timeOfLecture : LocalTime                     |
-| - durationOfLecture : double                    |
-+------------------------------------------------+
-| + getDeliveryMode() : String                    |
-| + hasCapacityLimit() : boolean                  |
-| + getCapacity() : int                           |
-| + getEndTime() : LocalTime                      |
-| + getTimeRange() : String                       |
-| + matchesKeyword(keyword:String) : boolean      |
-+------------------------------------------------+
-^
-|
---------------------------
-|                        |
-+--------------------+   +--------------------+
-| FaceToFaceCourse   |   | OnlineCourse       |
-+--------------------+   +--------------------+
-| - capacity : int   |   | (no extra fields)  |
-| - currentEnroll :int|  |                    |
-+--------------------+   +--------------------+
-| + hasAvailableSpace() |
-| + enrollStudent()     |
-| + withdrawStudent()   |
-+--------------------+
-
-+-----------------------------------+
-| CourseCatalog                     |
-+-----------------------------------+
-| - courses : List<Course>          |
-| - CSV_FILE : String               |
-+-----------------------------------+
-| + searchByKeyword()               |
-| + getAllCourses()                 |
-| + findCourseByName()              |
-| + getCourseCount()                |
-+-----------------------------------+
-
-+-----------------------------------+
-| Student                           |
-+-----------------------------------+
-| - studentId : String              |
-| - name : String                   |
-| - enrolledCourses : List<Course>  |
-+-----------------------------------+
-| + enroll()                        |
-| + withdraw()                      |
-| + isEnrolled()                    |
-| + getEnrolledCourses()            |
-+-----------------------------------+
-
-+-----------------------------------+
-| MyTimetable                       |
-+-----------------------------------+
-| - catalog : CourseCatalog         |
-| - currentStudent : Student        |
-| - scanner : Scanner               |
-+-----------------------------------+
-| + main()                          |
-| + run()                           |
-| + searchAndEnroll()               |
-| + showEnrolledCourses()           |
-| + withdrawFromCourse()            |
-+-----------------------------------+
-
----
-
-3. SEQUENCE DIAGRAM (Course Enrollment)
-
-This diagram shows the process when a student searches and enrolls in a course.
-
-Student
-|
-| Search keyword
-v
-MyTimetable
-|
-| searchByKeyword(keyword)
-v
-CourseCatalog
-|
-| return List<Course>
-v
-MyTimetable
-|
-| display results
-|
-| select course
-v
-Student.enroll(course)
-|
-| check capacity if FaceToFaceCourse
-v
-Course
-|
-| enrollment success/failure
-v
-Student course list updated
-
-Sequence Summary:
-
-Student → MyTimetable → CourseCatalog → MyTimetable → Student → Course
-
----
-
-4. OBJECT-ORIENTED PRINCIPLES DEMONSTRATED
+2. OBJECT-ORIENTED PRINCIPLES DEMONSTRATED
 
 ENCAPSULATION
 
@@ -198,7 +84,7 @@ These relationships represent “has-a” design relationships.
 
 ---
 
-5. JAVA COLLECTIONS FRAMEWORK USAGE
+3. JAVA COLLECTIONS FRAMEWORK USAGE
 
 Requirement: Use the Java Collections Framework (JCF) instead of arrays.
 
@@ -219,7 +105,7 @@ Simple iteration using enhanced for loops
 
 ---
 
-6. CLASS DETAILS
+4. CLASS DETAILS
 
 CLASS: Course (Abstract)
 
@@ -346,7 +232,7 @@ withdrawFromCourse()
 
 ---
 
-7. COMPILATION AND EXECUTION INSTRUCTIONS
+5. COMPILATION AND EXECUTION INSTRUCTIONS
 
 Requirements
 
@@ -379,7 +265,7 @@ java -cp bin MyTimetable
 
 ---
 
-8. FILE STRUCTURE
+6. FILE STRUCTURE
 
 workspace/
 
