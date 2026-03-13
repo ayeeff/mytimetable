@@ -1,0 +1,23 @@
+# Compiled class files
+*.class
+bin/
+
+# IDE files
+.project
+.classpath
+.settings/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+target/
+
+# Temp files
+*.tmp
+*.swp
