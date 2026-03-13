@@ -1,322 +1,394 @@
 
-```markdown
-# MYTIMETABLE - OBJECT-ORIENTED DESIGN DOCUMENTATION
+---
 
-**Assignment:** COSC1295 Advanced Programming - Assessment 1  
-**Author:** Stephen Fang (s3104442)  
-**Date:** 2026  
+MYTIMETABLE – OBJECT-ORIENTED DESIGN DOCUMENTATION
+
+Assignment: COSC1295 Advanced Programming – Assessment 1
+Author: Stephen Fang (s3104442)
+Date: April 2026
 
 ---
 
-# Table of Contents
+TABLE OF CONTENTS
+
 1. Class Overview and Hierarchy
-2. Object-Oriented Principles Demonstrated
-3. Java Collections Framework Usage
-4. Class Details
-5. Compilation and Execution Instructions
+2. UML Class Diagram
+3. Sequence Diagram
+4. Object-Oriented Principles Demonstrated
+5. Java Collections Framework Usage
+6. Class Details
+7. Compilation and Execution Instructions
+8. File Structure
 
 ---
 
-# 1. Class Overview and Hierarchy
+1. CLASS OVERVIEW AND HIERARCHY
 
-The system consists of **5 main classes** organized in a hierarchical structure:
+The system consists of five main classes organised into an object-oriented structure.
 
 ```
-
+                    Course (Abstract)
+                         |
+           +-------------+-------------+
+           |                           |
+    FaceToFaceCourse             OnlineCourse
+       (Concrete)                 (Concrete)
 ```
-            Course (Abstract)
-                 |
-    +------------+------------+
-    |                         |
-```
 
-FaceToFaceCourse           OnlineCourse
-(Concrete)               (Concrete)
-
-CourseCatalog - Manages all courses (Composition)
-Student       - Manages student enrollments (Composition)
-MyTimetable   - Main application class (Composition)
-
-````
+CourseCatalog – manages all available courses
+Student – manages student information and enrollments
+MyTimetable – main application controller
 
 ---
 
-# 2. Object-Oriented Principles Demonstrated
+2. UML CLASS DIAGRAM
 
-## A. Encapsulation
-- All instance variables are **private or protected**
-- Access controlled through **getter/setter methods**
-- Internal state hidden from external classes
-- Example: `Course` class has private fields accessed via getters
++------------------------------------------------+
+|                   Course (abstract)             |
++------------------------------------------------+
+| - courseName : String                           |
+| - year : String                                 |
+| - dayOfLecture : String                         |
+| - timeOfLecture : LocalTime                     |
+| - durationOfLecture : double                    |
++------------------------------------------------+
+| + getDeliveryMode() : String                    |
+| + hasCapacityLimit() : boolean                  |
+| + getCapacity() : int                           |
+| + getEndTime() : LocalTime                      |
+| + getTimeRange() : String                       |
+| + matchesKeyword(keyword:String) : boolean      |
++------------------------------------------------+
+^
+|
+--------------------------
+|                        |
++--------------------+   +--------------------+
+| FaceToFaceCourse   |   | OnlineCourse       |
++--------------------+   +--------------------+
+| - capacity : int   |   | (no extra fields)  |
+| - currentEnroll :int|  |                    |
++--------------------+   +--------------------+
+| + hasAvailableSpace() |
+| + enrollStudent()     |
+| + withdrawStudent()   |
++--------------------+
 
----
++-----------------------------------+
+| CourseCatalog                     |
++-----------------------------------+
+| - courses : List<Course>          |
+| - CSV_FILE : String               |
++-----------------------------------+
+| + searchByKeyword()               |
+| + getAllCourses()                 |
+| + findCourseByName()              |
+| + getCourseCount()                |
++-----------------------------------+
 
-## B. Inheritance
-- `Course` is an **abstract base class**
-- `FaceToFaceCourse` and `OnlineCourse` extend `Course`
-- Subclasses inherit common attributes and methods
-- Enables **code reuse and hierarchical structure**
++-----------------------------------+
+| Student                           |
++-----------------------------------+
+| - studentId : String              |
+| - name : String                   |
+| - enrolledCourses : List<Course>  |
++-----------------------------------+
+| + enroll()                        |
+| + withdraw()                      |
+| + isEnrolled()                    |
+| + getEnrolledCourses()            |
++-----------------------------------+
 
----
-
-## C. Polymorphism
-- Abstract methods in `Course`:
-  - `getDeliveryMode()`
-  - `hasCapacityLimit()`
-  - `getCapacity()`
-- Implemented differently by subclasses
-- `Course` references can point to either subclass
-- Method behavior determined **at runtime**
-
----
-
-## D. Abstraction
-- `Course` class is **abstract** and cannot be instantiated
-- Provides a **common interface** for course types
-- Hides complex implementation details
-- Exposes only essential features
-
----
-
-## E. Composition ("Has-A" Relationships)
-
-- `CourseCatalog` **has a** `List<Course>`
-- `Student` **has a** `List<Course>` (enrolled courses)
-- `MyTimetable` **has a** `CourseCatalog` and `Student`
-- Composition used instead of inheritance where appropriate
-
----
-
-# 3. Java Collections Framework (JCF) Usage
-
-### Requirement
-Must use **Java Collections Framework** — **no arrays allowed**
-
----
-
-## Usage in the System
-
-### 1. `ArrayList<Course>` in `CourseCatalog`
-- Stores all available courses loaded from CSV
-- Dynamic sizing as courses are added
-- Easy iteration and searching
-
-### 2. `ArrayList<Course>` in `Student`
-- Stores student's enrolled courses
-- Supports dynamic addition and removal
-- Enables contains checks and iteration
-
-### 3. `List<Course>` return types
-- Methods return the **List interface**
-- Allows loose coupling and flexibility
-- Implementation could change to `LinkedList` if needed
-
----
-
-## Benefits of JCF
-
-- Dynamic sizing (no fixed array limits)
-- Built-in methods for add, remove, search
-- Type safety using **generics**
-- Easy iteration using **enhanced for-loop**
++-----------------------------------+
+| MyTimetable                       |
++-----------------------------------+
+| - catalog : CourseCatalog         |
+| - currentStudent : Student        |
+| - scanner : Scanner               |
++-----------------------------------+
+| + main()                          |
+| + run()                           |
+| + searchAndEnroll()               |
+| + showEnrolledCourses()           |
+| + withdrawFromCourse()            |
++-----------------------------------+
 
 ---
 
-# 4. Class Details
+3. SEQUENCE DIAGRAM (Course Enrollment)
+
+This diagram shows the process when a student searches and enrolls in a course.
+
+Student
+|
+| Search keyword
+v
+MyTimetable
+|
+| searchByKeyword(keyword)
+v
+CourseCatalog
+|
+| return List<Course>
+v
+MyTimetable
+|
+| display results
+|
+| select course
+v
+Student.enroll(course)
+|
+| check capacity if FaceToFaceCourse
+v
+Course
+|
+| enrollment success/failure
+v
+Student course list updated
+
+Sequence Summary:
+
+Student → MyTimetable → CourseCatalog → MyTimetable → Student → Course
 
 ---
 
-# Course (Abstract)
+4. OBJECT-ORIENTED PRINCIPLES DEMONSTRATED
 
-**Package:** default  
+ENCAPSULATION
 
-**Purpose:** Base class for all course types
+All instance variables are private or protected.
+External classes access data through getter and setter methods.
+Internal class state is protected from direct modification.
 
-### Instance Variables (private)
+Example: The Course class stores its attributes privately and exposes them through getter methods.
 
-- `String courseName`
-- `String year`
-- `String dayOfLecture`
-- `LocalTime timeOfLecture`
-- `double durationOfLecture`
+INHERITANCE
 
-### Abstract Methods
+Course is an abstract base class.
 
-- `getDeliveryMode(): String`
-- `hasCapacityLimit(): boolean`
-- `getCapacity(): int`
+FaceToFaceCourse and OnlineCourse extend Course.
 
-### Concrete Methods
+This allows subclasses to reuse common properties while implementing their own behaviour.
 
-- `getEndTime()` – calculates lecture end time
-- `getTimeRange()` – returns formatted time range
-- `matchesKeyword(String)` – case-insensitive search
-- Standard getters
-- `equals()` and `hashCode()` based on `courseName`
+POLYMORPHISM
 
----
+Abstract methods defined in Course include:
 
-# FaceToFaceCourse (extends Course)
+getDeliveryMode()
+hasCapacityLimit()
+getCapacity()
 
-**Purpose:** Represents face-to-face courses with capacity limits
+Each subclass provides its own implementation.
+A Course reference can point to either subclass at runtime.
 
-### Additional Instance Variables
+ABSTRACTION
 
-- `int capacity`
-- `int currentEnrollment`
+The Course class is abstract and cannot be instantiated directly.
 
-### Methods
+It defines the common structure and behaviour shared by all course types.
 
-- `getDeliveryMode()` → `"Face-to-face"`
-- `hasCapacityLimit()` → `true`
-- `getCapacity()` → returns capacity
-- `hasAvailableSpace()` → checks `currentEnrollment < capacity`
-- `enrollStudent()` → increments enrollment if space available
-- `withdrawStudent()` → decrements enrollment
+COMPOSITION
+
+CourseCatalog contains a List<Course>.
+Student contains a List<Course> for enrollments.
+MyTimetable contains a CourseCatalog and Student.
+
+These relationships represent “has-a” design relationships.
 
 ---
 
-# OnlineCourse (extends Course)
+5. JAVA COLLECTIONS FRAMEWORK USAGE
 
-**Purpose:** Represents online courses with no capacity limit
+Requirement: Use the Java Collections Framework (JCF) instead of arrays.
 
-### Instance Variables
-None
+Usage in the system:
 
-### Methods
+CourseCatalog uses ArrayList<Course> to store all courses loaded from the CSV file.
 
-- `getDeliveryMode()` → `"Online"`
-- `hasCapacityLimit()` → `false`
-- `getCapacity()` → `-1` (no limit)
-- `hasAvailableSpace()` → always `true`
+Student uses ArrayList<Course> to store enrolled courses.
 
----
+Methods return the List interface type rather than a concrete class, which allows flexible implementations.
 
-# CourseCatalog
+Benefits of JCF:
 
-**Purpose:** Manages available courses and loads them from CSV
-
-### Instance Variables
-
-- `List<Course> courses`
-- `static final String CSV_FILE = "courses.csv"`
-
-### Methods
-
-- `CourseCatalog()` – constructor, loads CSV
-- `loadCoursesFromCSV()` – reads CSV and creates course objects
-- `searchByKeyword(String)` – returns matching courses
-- `getAllCourses()` – returns copy of all courses
-- `findCourseByName(String)` – returns course or `null`
-- `getCourseCount()` – number of courses in catalog
+Dynamic sizing (no fixed array length)
+Built-in methods for add, remove and search
+Type safety through generics
+Simple iteration using enhanced for loops
 
 ---
 
-# Student
+6. CLASS DETAILS
 
-**Purpose:** Represents a student and manages enrollments
+CLASS: Course (Abstract)
 
-### Instance Variables
+Purpose: Base class representing a generic course.
 
-- `String studentId`
-- `String name`
-- `List<Course> enrolledCourses`
+Instance Variables
 
-### Methods
+courseName : String
+year : String
+dayOfLecture : String
+timeOfLecture : LocalTime
+durationOfLecture : double
 
-- `Student(String, String)` – constructor
-- `getEnrolledCourses()` – returns copy of enrolled courses
-- `isEnrolled(Course)` – checks enrollment status
-- `enroll(Course)` – adds course and handles capacity logic
-- `withdraw(Course)` – removes course and updates capacity
-- `hasNoCourses()` – checks if student has no enrolled courses
+Abstract Methods
 
----
+getDeliveryMode()
+hasCapacityLimit()
+getCapacity()
 
-# MyTimetable
+Concrete Methods
 
-**Purpose:** Main application class with console interface
-
-### Instance Variables
-
-- `CourseCatalog catalog`
-- `Student currentStudent`
-- `Scanner scanner`
-
-### Methods
-
-- `main(String[])` – program entry point
-- `run()` – main program loop
-- `displayMainMenu()` – shows menu options
-- `searchAndEnroll()` – handles course search and enrollment
-- `showEnrolledCourses()` – displays current enrollments
-- `withdrawFromCourse()` – handles withdrawal process
+getEndTime()
+getTimeRange()
+matchesKeyword(String)
+standard getter methods
+equals() and hashCode() based on courseName
 
 ---
 
-# 5. Compilation and Execution Instructions
+CLASS: FaceToFaceCourse
 
-## Requirements
+Extends Course.
 
-- Java SE 8 or later
-- All `.java` files in the same directory
-- `courses.csv` file present
+Represents a classroom-based course with capacity limits.
+
+Additional Variables
+
+capacity : int
+currentEnrollment : int
+
+Methods
+
+getDeliveryMode() returns "Face-to-face"
+hasCapacityLimit() returns true
+getCapacity() returns capacity value
+hasAvailableSpace() checks available seats
+enrollStudent() increments enrollment
+withdrawStudent() decrements enrollment
 
 ---
 
-## Compilation
+CLASS: OnlineCourse
 
-```bash
+Extends Course.
+
+Represents an online course with unlimited capacity.
+
+Methods
+
+getDeliveryMode() returns "Online"
+hasCapacityLimit() returns false
+getCapacity() returns -1
+hasAvailableSpace() always returns true
+
+---
+
+CLASS: CourseCatalog
+
+Manages all available courses.
+
+Variables
+
+courses : List<Course>
+CSV_FILE : String
+
+Methods
+
+loadCoursesFromCSV()
+searchByKeyword(String)
+getAllCourses()
+findCourseByName(String)
+getCourseCount()
+
+---
+
+CLASS: Student
+
+Represents a student and manages enrollments.
+
+Variables
+
+studentId : String
+name : String
+enrolledCourses : List<Course>
+
+Methods
+
+getEnrolledCourses()
+isEnrolled(Course)
+enroll(Course)
+withdraw(Course)
+hasNoCourses()
+
+---
+
+CLASS: MyTimetable
+
+Main application controller with console interface.
+
+Variables
+
+catalog : CourseCatalog
+currentStudent : Student
+scanner : Scanner
+
+Methods
+
+main()
+run()
+displayMainMenu()
+searchAndEnroll()
+showEnrolledCourses()
+withdrawFromCourse()
+
+---
+
+7. COMPILATION AND EXECUTION INSTRUCTIONS
+
+Requirements
+
+Java SE 8 or later
+All .java files in the same directory
+courses.csv file in the same directory
+
+Compilation
+
 javac Course.java FaceToFaceCourse.java OnlineCourse.java CourseCatalog.java Student.java MyTimetable.java
-````
 
 Or compile everything:
 
-```bash
 javac *.java
-```
 
 ---
 
-## Execution
+Execution
 
-Using **GitHub Codespaces** (free):
+Using GitHub Codespaces (free):
 
-1. Click **Code → Codespaces → Create codespace on main**
-2. Wait for the environment to load
-3. Run:
+Click Code → Codespaces → Create codespace on main
 
-```bash
+Wait for the environment to load
+
+Run:
+
 javac src/*.java -d bin
 java -cp bin MyTimetable
-```
 
 ---
 
-# File Structure
+8. FILE STRUCTURE
 
-```
 workspace/
-├── courses.csv
-├── Course.java
-├── FaceToFaceCourse.java
-├── OnlineCourse.java
-├── CourseCatalog.java
-├── Student.java
-└── MyTimetable.java
-```
 
-```
+courses.csv
+Course.java
+FaceToFaceCourse.java
+OnlineCourse.java
+CourseCatalog.java
+Student.java
+MyTimetable.java
 
 ---
-
-If you want, I can also **upgrade this Markdown to a “High Distinction” level design document** (what many COSC1295 graders expect), adding:
-
-- UML class diagram  
-- Sequence diagram  
-- Design rationale  
-- Complexity analysis  
-- Testing section  
-
-That usually pushes documentation from **Credit/Distinction → High Distinction**.
-```
