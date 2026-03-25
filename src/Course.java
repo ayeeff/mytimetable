@@ -2,12 +2,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Abstract base class representing a generic Course.
- * Demonstrates abstraction, encapsulation, and inheritance principles.
- * All instance variables are private - accessed only via getters/setters.
+ * Abstract base class representing a Course.
+ * COSC1295 Assignment 1 - Week 6 Final Submission
+ * 
+ * This class demonstrates abstraction, encapsulation and provides
+ * common functionality for all course types.
  */
 public abstract class Course {
-    // Private instance variables - encapsulation
+    // Instance variables - private for encapsulation
     private String courseName;
     private String year;
     private String dayOfLecture;
@@ -16,11 +18,6 @@ public abstract class Course {
 
     /**
      * Constructor for Course
-     * @param courseName Name of the course
-     * @param year Year level (Year 1, Year 2, Year 3)
-     * @param dayOfLecture Day when lecture is held
-     * @param timeOfLecture Time when lecture starts
-     * @param durationOfLecture Duration in hours
      */
     public Course(String courseName, String year, String dayOfLecture, 
                   String timeOfLecture, double durationOfLecture) {
@@ -31,7 +28,7 @@ public abstract class Course {
         this.durationOfLecture = durationOfLecture;
     }
 
-    // Getter methods - controlled access to private data
+    // Getter methods
     public String getCourseName() {
         return courseName;
     }
@@ -52,28 +49,13 @@ public abstract class Course {
         return durationOfLecture;
     }
 
-    /**
-     * Abstract method to get delivery mode - must be implemented by subclasses
-     * Demonstrates polymorphism
-     * @return String representing delivery mode
-     */
+    // Abstract methods to be implemented by subclasses
     public abstract String getDeliveryMode();
-
-    /**
-     * Abstract method to check if course has capacity limit
-     * @return true if capacity constrained, false otherwise
-     */
     public abstract boolean hasCapacityLimit();
-
-    /**
-     * Abstract method to get capacity
-     * @return capacity number, or -1 if no limit
-     */
     public abstract int getCapacity();
 
     /**
-     * Calculate end time of lecture based on start time and duration
-     * @return formatted end time string
+     * Calculate lecture end time
      */
     public String getEndTime() {
         int durationMinutes = (int) (durationOfLecture * 60);
@@ -82,8 +64,7 @@ public abstract class Course {
     }
 
     /**
-     * Format time range for display
-     * @return String in format "HH:mm-HH:mm"
+     * Get formatted time range
      */
     public String getTimeRange() {
         return timeOfLecture.format(DateTimeFormatter.ofPattern("H:mm")) + "-" + getEndTime();
@@ -91,8 +72,6 @@ public abstract class Course {
 
     /**
      * Check if course name contains keyword (case-insensitive)
-     * @param keyword search term
-     * @return true if keyword found in course name
      */
     public boolean matchesKeyword(String keyword) {
         return courseName.toLowerCase().contains(keyword.toLowerCase());

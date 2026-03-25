@@ -2,42 +2,31 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * MyTimetable - Main application class for the course management system.
- * Provides console-based menu interface for students to:
- * 1. Search and enroll in courses
- * 2. View enrolled courses
- * 3. Withdraw from courses
- * 4. Exit the program
+ * MyTimetable - Main application class
+ * COSC1295 Assignment 1 - Final Week 6 Submission
  * 
- * Demonstrates proper OO design with composition and JCF usage.
+ * All features implemented:
+ * - Search and enroll with capacity checking
+ * - Display enrolled courses
+ * - Withdraw from courses
+ * - Proper use of JCF, inheritance, polymorphism, encapsulation
  */
 public class MyTimetable {
-    // Private instance variables - composition
     private CourseCatalog catalog;
     private Student currentStudent;
     private Scanner scanner;
 
-    /**
-     * Constructor initializes the system
-     */
     public MyTimetable() {
         this.catalog = new CourseCatalog();
         this.scanner = new Scanner(System.in);
-        // Create a default student for this session
         this.currentStudent = new Student("S001", "Student");
     }
 
-    /**
-     * Main entry point
-     */
     public static void main(String[] args) {
         MyTimetable system = new MyTimetable();
         system.run();
     }
 
-    /**
-     * Main program loop
-     */
     public void run() {
         System.out.println("Welcome to MyTimetable!");
 
@@ -66,11 +55,9 @@ public class MyTimetable {
         }
     }
 
-    /**
-     * Display main menu options
-     */
     private void displayMainMenu() {
-        System.out.println("\n>Select from main menu");
+        System.out.println("
+>Select from main menu");
         System.out.println("1) Search by keyword to enroll");
         System.out.println("2) Show my enrolled courses");
         System.out.println("3) Withdraw from a course");
@@ -78,14 +65,10 @@ public class MyTimetable {
         System.out.print("Please select: ");
     }
 
-    /**
-     * Handle search and enrollment flow
-     */
     private void searchAndEnroll() {
         System.out.print("Please provide a keyword: ");
         String keyword = scanner.nextLine().trim();
 
-        // Search for matching courses
         List<Course> matchingCourses = catalog.searchByKeyword(keyword);
 
         if (matchingCourses.isEmpty()) {
@@ -93,7 +76,6 @@ public class MyTimetable {
             return;
         }
 
-        // Display matching courses
         System.out.println(">Select from matching list");
         for (int i = 0; i < matchingCourses.size(); i++) {
             System.out.println((i + 1) + ") " + matchingCourses.get(i).getCourseName());
@@ -108,13 +90,11 @@ public class MyTimetable {
             if (choice >= 1 && choice <= matchingCourses.size()) {
                 Course selectedCourse = matchingCourses.get(choice - 1);
 
-                // Check if already enrolled
                 if (currentStudent.isEnrolled(selectedCourse)) {
                     System.out.println("You are already enrolled in this course!");
                     return;
                 }
 
-                // Check capacity for face-to-face
                 if (selectedCourse instanceof FaceToFaceCourse) {
                     FaceToFaceCourse f2f = (FaceToFaceCourse) selectedCourse;
                     if (!f2f.hasAvailableSpace()) {
@@ -123,7 +103,6 @@ public class MyTimetable {
                     }
                 }
 
-                // Enroll the student
                 if (currentStudent.enroll(selectedCourse)) {
                     System.out.println("You have enrolled in the course " + selectedCourse.getCourseName() + "!");
                 } else {
@@ -131,7 +110,7 @@ public class MyTimetable {
                 }
 
             } else if (choice == matchingCourses.size() + 1) {
-                // Go to main menu - do nothing
+                // Return to main menu
             } else {
                 System.out.println("Invalid selection.");
             }
@@ -140,32 +119,29 @@ public class MyTimetable {
         }
     }
 
-    /**
-     * Display all enrolled courses
-     */
     private void showEnrolledCourses() {
         if (currentStudent.hasNoCourses()) {
             System.out.println("You don't have any courses enrolled.");
             return;
         }
 
-        System.out.println("\nYou have enrolled into the following course(s):\n");
+        System.out.println("
+You have enrolled into the following course(s):
+");
         List<Course> courses = currentStudent.getEnrolledCourses();
         for (Course course : courses) {
             System.out.println(course.toString());
         }
     }
 
-    /**
-     * Handle course withdrawal
-     */
     private void withdrawFromCourse() {
         if (currentStudent.hasNoCourses()) {
             System.out.println("You don't have any courses enrolled.");
             return;
         }
 
-        System.out.println("\nPlease choose a course to withdraw:");
+        System.out.println("
+Please choose a course to withdraw:");
         List<Course> courses = currentStudent.getEnrolledCourses();
 
         for (int i = 0; i < courses.size(); i++) {

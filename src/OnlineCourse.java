@@ -1,21 +1,11 @@
 /**
- * Concrete subclass representing an online delivered course.
- * Extends Course with no capacity constraints.
- * Demonstrates inheritance and polymorphism.
+ * OnlineCourse - concrete class for online delivery courses
+ * No capacity constraints
  */
 public class OnlineCourse extends Course {
 
-    /**
-     * Constructor for OnlineCourse
-     * @param courseName Name of the course
-     * @param year Year level
-     * @param dayOfLecture Day of lecture
-     * @param timeOfLecture Time of lecture
-     * @param durationOfLecture Duration in hours
-     */
     public OnlineCourse(String courseName, String year, String dayOfLecture, 
                         String timeOfLecture, double durationOfLecture) {
-        // Call superclass constructor
         super(courseName, year, dayOfLecture, timeOfLecture, durationOfLecture);
     }
 
@@ -31,13 +21,9 @@ public class OnlineCourse extends Course {
 
     @Override
     public int getCapacity() {
-        return -1; // No capacity limit
+        return -1;  // indicates no limit
     }
 
-    /**
-     * Online courses always have available space
-     * @return always true
-     */
     public boolean hasAvailableSpace() {
         return true;
     }
