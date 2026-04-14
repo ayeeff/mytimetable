@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
  * equals() and hashCode() are based on courseName so that
  * LinkedHashSet<Course> in Student correctly prevents duplicates.
  */
-
 public abstract class Course {
     private String courseName;
     private String year;
