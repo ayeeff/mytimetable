@@ -3,23 +3,21 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Abstract base class representing a Course.
- * COSC1295 Assignment 1 - Week 6 Final Submission
- * 
- * This class demonstrates abstraction, encapsulation and provides
- * common functionality for all course types.
+ * COSC1295 Assignment 1
+ *
+ * Provides common fields and behaviour for all course types.
+ * equals() and hashCode() are based on courseName so that
+ * LinkedHashSet<Course> in Student correctly prevents duplicates.
  */
+
 public abstract class Course {
-    // Instance variables - private for encapsulation
     private String courseName;
     private String year;
     private String dayOfLecture;
     private LocalTime timeOfLecture;
     private double durationOfLecture;
 
-    /**
-     * Constructor for Course
-     */
-    public Course(String courseName, String year, String dayOfLecture, 
+    public Course(String courseName, String year, String dayOfLecture,
                   String timeOfLecture, double durationOfLecture) {
         this.courseName = courseName;
         this.year = year;
@@ -28,60 +26,39 @@ public abstract class Course {
         this.durationOfLecture = durationOfLecture;
     }
 
-    // Getter methods
-    public String getCourseName() {
-        return courseName;
-    }
+    public String getCourseName() { return courseName; }
+    public String getYear() { return year; }
+    public String getDayOfLecture() { return dayOfLecture; }
+    public LocalTime getTimeOfLecture() { return timeOfLecture; }
+    public double getDurationOfLecture() { return durationOfLecture; }
 
-    public String getYear() {
-        return year;
-    }
-
-    public String getDayOfLecture() {
-        return dayOfLecture;
-    }
-
-    public LocalTime getTimeOfLecture() {
-        return timeOfLecture;
-    }
-
-    public double getDurationOfLecture() {
-        return durationOfLecture;
-    }
-
-    // Abstract methods to be implemented by subclasses
     public abstract String getDeliveryMode();
     public abstract boolean hasCapacityLimit();
     public abstract int getCapacity();
 
-    /**
-     * Calculate lecture end time
-     */
     public String getEndTime() {
         int durationMinutes = (int) (durationOfLecture * 60);
         LocalTime endTime = timeOfLecture.plusMinutes(durationMinutes);
         return endTime.format(DateTimeFormatter.ofPattern("H:mm"));
     }
 
-    /**
-     * Get formatted time range
-     */
     public String getTimeRange() {
         return timeOfLecture.format(DateTimeFormatter.ofPattern("H:mm")) + "-" + getEndTime();
     }
 
-    /**
-     * Check if course name contains keyword (case-insensitive)
-     */
     public boolean matchesKeyword(String keyword) {
         return courseName.toLowerCase().contains(keyword.toLowerCase());
     }
 
     @Override
     public String toString() {
-        return courseName + " " + getDeliveryMode() + " " + dayOfLecture + " " + getTimeRange();
+        return courseName + " " + getDeliveryMode() + " " + getDayOfLecture() + " " + getTimeRange();
     }
 
+    /**
+     * Equality based on course name.
+     * Required for LinkedHashSet duplicate prevention in Student.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
