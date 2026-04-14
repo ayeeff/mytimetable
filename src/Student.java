@@ -1,19 +1,24 @@
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
- * Student class representing a student in the system
- * Manages enrolled courses using JCF ArrayList
+ * Student class representing a student in the system.
+ * Enrolled courses are stored in a LinkedHashSet:
+ *   - Prevents duplicate enrolments by definition (no manual contains() check needed)
+ *   - O(1) average-case add/remove/contains via hashing
+ *   - Preserves insertion order for consistent display
  */
 public class Student {
     private String studentId;
     private String name;
-    private List<Course> enrolledCourses;
+    private Set<Course> enrolledCourses;
 
     public Student(String studentId, String name) {
         this.studentId = studentId;
         this.name = name;
-        this.enrolledCourses = new ArrayList<Course>();
+        this.enrolledCourses = new LinkedHashSet<Course>();
     }
 
     public String getStudentId() {
@@ -24,6 +29,7 @@ public class Student {
         return name;
     }
 
+    /** Returns a snapshot list for indexed display in the UI. */
     public List<Course> getEnrolledCourses() {
         return new ArrayList<Course>(enrolledCourses);
     }
@@ -33,35 +39,33 @@ public class Student {
     }
 
     /**
-     * Enroll in a course with capacity checking
+     * Enrol in a course.
+     * LinkedHashSet.add() returns false if the course is already present,
+     * so duplicate prevention requires no extra contains() call.
      */
     public boolean enroll(Course course) {
-        if (enrolledCourses.contains(course)) {
-            return false;
-        }
-
         if (course instanceof FaceToFaceCourse) {
             FaceToFaceCourse f2f = (FaceToFaceCourse) course;
             if (!f2f.hasAvailableSpace()) {
                 return false;
             }
-            f2f.enrollStudent();
+            // Only increment enrollment if the set actually accepted the course
+            if (enrolledCourses.add(course)) {
+                f2f.enrollStudent();
+                return true;
+            }
+            return false; // already enrolled
         }
-
-        enrolledCourses.add(course);
-        return true;
+        return enrolledCourses.add(course); // false if duplicate
     }
 
     /**
-     * Withdraw from a course
+     * Withdraw from a course.
      */
     public boolean withdraw(Course course) {
-        if (enrolledCourses.contains(course)) {
-            enrolledCourses.remove(course);
-
+        if (enrolledCourses.remove(course)) {
             if (course instanceof FaceToFaceCourse) {
-                FaceToFaceCourse f2f = (FaceToFaceCourse) course;
-                f2f.withdrawStudent();
+                ((FaceToFaceCourse) course).withdrawStudent();
             }
             return true;
         }
