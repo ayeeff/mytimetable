@@ -10,7 +10,11 @@ import java.util.Scanner;
  * - Display enrolled courses
  * - Withdraw from courses
  * - Proper use of JCF, inheritance, polymorphism, encapsulation
+ *
+ * Duplicate-enrolment prevention is now handled inside Student.enroll()
+ * via the LinkedHashSet.
  */
+
 public class MyTimetable {
     private CourseCatalog catalog;
     private Student currentStudent;
@@ -56,12 +60,13 @@ public class MyTimetable {
     }
 
     private void displayMainMenu() {
-        System.out.println("
->Select from main menu");
-        System.out.println("1) Search by keyword to enroll");
-        System.out.println("2) Show my enrolled courses");
-        System.out.println("3) Withdraw from a course");
-        System.out.println("4) Exit");
+        System.out.println("\n--------------------------------------------------------------------------------");
+        System.out.println("> Select from main menu");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("   1) Search by keyword to enroll");
+        System.out.println("   2) Show my enrolled courses");
+        System.out.println("   3) Withdraw from a course");
+        System.out.println("   4) Exit");
         System.out.print("Please select: ");
     }
 
@@ -76,11 +81,13 @@ public class MyTimetable {
             return;
         }
 
-        System.out.println(">Select from matching list");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("> Select from matching list");
+        System.out.println("--------------------------------------------------------------------------------");
         for (int i = 0; i < matchingCourses.size(); i++) {
-            System.out.println((i + 1) + ") " + matchingCourses.get(i).getCourseName());
+            System.out.println("   " + (i + 1) + ") " + matchingCourses.get(i).getCourseName());
         }
-        System.out.println((matchingCourses.size() + 1) + ") Go to main menu");
+        System.out.println("   " + (matchingCourses.size() + 1) + ") Go to main menu");
         System.out.print("Please select: ");
 
         String selection = scanner.nextLine().trim();
@@ -90,28 +97,16 @@ public class MyTimetable {
             if (choice >= 1 && choice <= matchingCourses.size()) {
                 Course selectedCourse = matchingCourses.get(choice - 1);
 
-                if (currentStudent.isEnrolled(selectedCourse)) {
-                    System.out.println("You are already enrolled in this course!");
-                    return;
-                }
-
-                if (selectedCourse instanceof FaceToFaceCourse) {
-                    FaceToFaceCourse f2f = (FaceToFaceCourse) selectedCourse;
-                    if (!f2f.hasAvailableSpace()) {
-                        System.out.println("Sorry, this course is full!");
-                        return;
-                    }
-                }
-
+                // Student.enroll() returns false for both duplicates and full courses
                 if (currentStudent.enroll(selectedCourse)) {
                     System.out.println("You have enrolled in the course " + selectedCourse.getCourseName() + "!");
+                } else if (currentStudent.isEnrolled(selectedCourse)) {
+                    System.out.println("You are already enrolled in " + selectedCourse.getCourseName() + ".");
                 } else {
-                    System.out.println("Failed to enroll. Please try again.");
+                    System.out.println("Sorry, " + selectedCourse.getCourseName() + " is full.");
                 }
 
-            } else if (choice == matchingCourses.size() + 1) {
-                // Return to main menu
-            } else {
+            } else if (choice != matchingCourses.size() + 1) {
                 System.out.println("Invalid selection.");
             }
         } catch (NumberFormatException e) {
@@ -125,12 +120,12 @@ public class MyTimetable {
             return;
         }
 
-        System.out.println("
-You have enrolled into the following course(s):
-");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("You have enrolled into the following course(s):");
+        System.out.println("--------------------------------------------------------------------------------");
         List<Course> courses = currentStudent.getEnrolledCourses();
-        for (Course course : courses) {
-            System.out.println(course.toString());
+        for (int i = 0; i < courses.size(); i++) {
+            System.out.println("   " + (i + 1) + ") " + courses.get(i).toString());
         }
     }
 
@@ -140,12 +135,13 @@ You have enrolled into the following course(s):
             return;
         }
 
-        System.out.println("
-Please choose a course to withdraw:");
+        System.out.println("--------------------------------------------------------------------------------");
+        System.out.println("Please choose a course to withdraw:");
+        System.out.println("--------------------------------------------------------------------------------");
         List<Course> courses = currentStudent.getEnrolledCourses();
 
         for (int i = 0; i < courses.size(); i++) {
-            System.out.println((i + 1) + ") " + courses.get(i).toString());
+            System.out.println("   " + (i + 1) + ") " + courses.get(i).toString());
         }
         System.out.print("Please select: ");
 
@@ -155,7 +151,6 @@ Please choose a course to withdraw:");
             int choice = Integer.parseInt(selection);
             if (choice >= 1 && choice <= courses.size()) {
                 Course courseToWithdraw = courses.get(choice - 1);
-
                 if (currentStudent.withdraw(courseToWithdraw)) {
                     System.out.println("You have withdrawn from " + courseToWithdraw.getCourseName() + "!");
                 } else {
