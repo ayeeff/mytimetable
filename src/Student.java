@@ -7,7 +7,6 @@ import java.util.Set;
  * Student class representing a student in the system.
  * Enrolled courses are stored in a LinkedHashSet:
  *   - Prevents duplicate enrolments by definition (no manual contains() check needed)
- *   - O(1) average-case add/remove/contains via hashing
  *   - Preserves insertion order for consistent display
  */
 public class Student {
@@ -29,7 +28,6 @@ public class Student {
         return name;
     }
 
-    /** Returns a snapshot list for indexed display in the UI. */
     public List<Course> getEnrolledCourses() {
         return new ArrayList<Course>(enrolledCourses);
     }

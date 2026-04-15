@@ -73,8 +73,6 @@ public class CourseCatalog {
 
     /**
      * Returns all courses whose name contains the keyword (case-insensitive).
-     * Iterates the ArrayList — O(n) linear scan is appropriate here because
-     * partial-string matching cannot be accelerated with a HashMap.
      */
     public List<Course> searchByKeyword(String keyword) {
         List<Course> matching = new ArrayList<Course>();
@@ -87,7 +85,6 @@ public class CourseCatalog {
     }
 
     /**
-     * O(1) exact-name lookup via HashMap.
      * Returns null if not found.
      */
     public Course findCourseByName(String courseName) {
